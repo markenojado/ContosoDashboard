@@ -7,20 +7,25 @@ using Microsoft.EntityFrameworkCore;
 using System.IO;
 using System.Threading;
 using System;
+using ContosoDashboard.Services.Repositories;
 
 namespace ContosoDashboard.Services;
 
 public class DocumentService
 {
     private readonly ApplicationDbContext _db;
+    private readonly IDocumentRepository _repository;
     private readonly IFileStorageService _storage;
     private readonly IVirusScanner _scanner;
+    private readonly Services.Logging.IDocumentAuditLogger _auditLogger;
 
-    public DocumentService(ApplicationDbContext db, IFileStorageService storage, IVirusScanner scanner)
+    public DocumentService(ApplicationDbContext db, IDocumentRepository repository, IFileStorageService storage, IVirusScanner scanner, Services.Logging.IDocumentAuditLogger auditLogger)
     {
         _db = db;
+        _repository = repository;
         _storage = storage;
         _scanner = scanner;
+        _auditLogger = auditLogger;
     }
 
     public async Task<Document> UploadAsync(int uploadedByUserId, int? projectId, string originalFileName, Stream content, string? contentType, CancellationToken cancellationToken = default)
@@ -47,10 +52,9 @@ public class DocumentService
             CreatedDate = DateTime.UtcNow
         };
 
-        _db.Documents.Add(doc);
         try
         {
-            await _db.SaveChangesAsync(cancellationToken);
+            await _repository.AddAsync(doc, cancellationToken);
         }
         catch (Exception)
         {
@@ -74,7 +78,7 @@ public class DocumentService
             var result = await _scanner.ScanAsync(stream, cancellationToken);
             doc.ScanStatus = result.IsClean ? ScanStatus.Clean : ScanStatus.Infected;
             doc.ScanReport = result.Report;
-            _db.Documents.Update(doc);
+            // store scan result
             await _db.SaveChangesAsync(cancellationToken);
         }
         catch
@@ -87,6 +91,18 @@ public class DocumentService
 
     public async Task<Document?> GetAsync(int documentId, CancellationToken cancellationToken = default)
     {
-        return await _db.Documents.FirstOrDefaultAsync(d => d.DocumentId == documentId, cancellationToken);
+        return await _repository.GetByIdAsync(documentId, cancellationToken);
+    }
+
+    public async Task<DocumentSearchResult> SearchAsync(string? query, int page = 1, int pageSize = 20, int? projectId = null, int? uploaderId = null, CancellationToken cancellationToken = default)
+    {
+        return await _repository.SearchAsync(query, page, pageSize, projectId, uploaderId, cancellationToken);
+    }
+
+    public async Task DeleteAsync(int documentId, CancellationToken cancellationToken = default)
+    {
+        var doc = await _repository.GetByIdAsync(documentId, cancellationToken);
+        if (doc == null) return;
+        await _repository.DeleteAsync(doc, cancellationToken);
     }
 }

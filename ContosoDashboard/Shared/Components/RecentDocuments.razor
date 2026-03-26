@@ -1,0 +1,23 @@
+@inject HttpClient Http
+
+<div class="card">
+    <div class="card-header">Recent Documents</div>
+    <ul class="list-group list-group-flush">
+        @foreach (var d in documents)
+        {
+            <li class="list-group-item">@d.Title <small class="text-muted">(@d.FileName)</small></li>
+        }
+    </ul>
+</div>
+
+@code {
+    private List<ContosoDashboard.Models.Document> documents = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await Http.GetFromJsonAsync<SearchResponse>($"api/files/search?page=1&pageSize=5");
+        documents = res?.items?.ToList() ?? new List<ContosoDashboard.Models.Document>();
+    }
+
+    private class SearchResponse { public IEnumerable<ContosoDashboard.Models.Document>? items { get; set; } public int total { get; set; } }
+}

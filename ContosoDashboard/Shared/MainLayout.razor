@@ -34,7 +34,12 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <div class="row">
+                <div class="col-8">@Body</div>
+                <div class="col-4">
+                    <Shared.Components.RecentDocuments />
+                </div>
+            </div>
         </article>
     </main>
 </div>

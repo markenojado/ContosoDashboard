@@ -3,6 +3,7 @@ using ContosoDashboard.Data;
 using ContosoDashboard.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using ContosoDashboard.Configuration;
 using ContosoDashboard.Services.Scanner;
 using Microsoft.Extensions.Options;
@@ -58,6 +59,12 @@ builder.Services.AddScoped<DocumentService>();
 // Register stub virus scanner for training
 builder.Services.AddScoped<IVirusScanner, StubVirusScanner>();
 
+// Register authorization handler for documents
+builder.Services.AddScoped<IAuthorizationHandler, ContosoDashboard.Authorization.DocumentAuthorizationHandler>();
+// Register repository and audit logger
+builder.Services.AddScoped<ContosoDashboard.Services.Repositories.IDocumentRepository, ContosoDashboard.Services.Repositories.DocumentRepository>();
+builder.Services.AddScoped<ContosoDashboard.Services.Logging.IDocumentAuditLogger, ContosoDashboard.Services.Logging.DocumentAuditLogger>();
+
 // Add HttpContextAccessor for accessing user claims
 builder.Services.AddHttpContextAccessor();
 
@@ -69,8 +76,8 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.EnsureCreated(); // For development - use migrations in production
+        //var context = services.GetRequiredService<ApplicationDbContext>();
+        //context.Database.EnsureCreated(); // For development - use migrations in production
     }
     catch (Exception ex)
     {

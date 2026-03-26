@@ -1,0 +1,41 @@
+@page "/documents"
+@inject HttpClient Http
+
+<h3>My Documents</h3>
+
+<input placeholder="Search" @bind="query" />
+<button @onclick="Search">Search</button>
+
+<table class="table">
+    <thead>
+        <tr><th>Title</th><th>File</th><th>Uploaded</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var d in documents)
+        {
+            <tr>
+                <td>@d.Title</td>
+                <td>@d.FileName</td>
+                <td>@d.CreatedDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private string? query;
+    private List<ContosoDashboard.Models.Document> documents = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Search();
+    }
+
+    private async Task Search()
+    {
+        var res = await Http.GetFromJsonAsync<SearchResponse>($"api/files/search?q={query}");
+        documents = res?.items?.ToList() ?? new List<ContosoDashboard.Models.Document>();
+    }
+
+    private class SearchResponse { public IEnumerable<ContosoDashboard.Models.Document>? items { get; set; } public int total { get; set; } }
+}

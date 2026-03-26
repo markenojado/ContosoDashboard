@@ -19,6 +19,13 @@ public class ApplicationDbContext : DbContext
     public DbSet<Announcement> Announcements { get; set; } = null!;
     public DbSet<Document> Documents { get; set; } = null!;
     public DbSet<DocumentShare> DocumentShares { get; set; } = null!;
+    public DbSet<DocumentAudit> DocumentAudits { get; set; } = null!;
+    
+    // Indexes to support search and recent queries
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
