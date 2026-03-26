@@ -1,0 +1,32 @@
+@page "/documents/upload"
+@using System.Net.Http.Headers
+@using Microsoft.AspNetCore.Components.Forms
+@inject HttpClient Http
+
+<h3>Upload Document (Training)</h3>
+
+<InputFile OnChange="OnFileSelected" />
+<button @onclick="UploadFile">Upload</button>
+
+@code {
+    private IBrowserFile? _selected;
+
+    private void OnFileSelected(InputFileChangeEventArgs e)
+    {
+        _selected = e.File;
+    }
+
+    private async Task UploadFile()
+    {
+        if (_selected == null) return;
+        var content = new MultipartFormDataContent();
+        var stream = _selected.OpenReadStream(50 * 1024 * 1024);
+        content.Add(new StreamContent(stream), "file", _selected.Name);
+        var res = await Http.PostAsync("api/files/upload", content);
+        if (res.IsSuccessStatusCode)
+        {
+            // minimal success handling
+            var json = await res.Content.ReadAsStringAsync();
+        }
+    }
+}
