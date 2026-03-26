@@ -16,44 +16,44 @@ This file contains Phase 1 completed notes and Phase 2 executable tasks organize
 ---
 
 **Phase 2 — Setup**
-- [ ] T005 Update `appsettings.Development.json` with `FileStorage:BasePath` entry — ContosoDashboard/appsettings.Development.json
-- [ ] T006 Add `Document` and `DocumentShare` entity classes — ContosoDashboard/Models/Document.cs, ContosoDashboard/Models/DocumentShare.cs
-- [ ] T007 Add `DbSet<Document>` and `DbSet<DocumentShare>` to `ApplicationDbContext` — ContosoDashboard/Data/ApplicationDbContext.cs
-- [ ] T008 Create EF Core migration for document entities and apply to LocalDB — ContosoDashboard/Migrations/ (create via `dotnet ef migrations add AddDocuments` and `dotnet ef database update`)
-- [ ] T009 Add seed data for categories and sample documents (development only) — ContosoDashboard/Data/Seed/DocumentSeed.cs
-- [ ] T010 Add `IFileStorageService` interface — ContosoDashboard/Services/IFileStorageService.cs
-- [ ] T011 Implement `LocalFileStorageService` per storage pattern and config `BasePath` — ContosoDashboard/Services/LocalFileStorageService.cs
-- [ ] T012 Add `IVirusScanner` stub and `StubVirusScanner` implementation for training — ContosoDashboard/Services/Scanner/IVirusScanner.cs, ContosoDashboard/Services/Scanner/StubVirusScanner.cs
-- [ ] T013 Register services in DI container (`IFileStorageService`, `DocumentService`, `IVirusScanner`) — ContosoDashboard/Program.cs
-- [ ] T014 Add configuration model for file storage and bind in startup — ContosoDashboard/Configuration/FileStorageOptions.cs and ContosoDashboard/Program.cs
+ - [x] T005 Update `appsettings.Development.json` with `FileStorage:BasePath` entry — ContosoDashboard/appsettings.Development.json
+ - [x] T006 Add `Document` and `DocumentShare` entity classes — ContosoDashboard/Models/Document.cs, ContosoDashboard/Models/DocumentShare.cs
+ - [x] T007 Add `DbSet<Document>` and `DbSet<DocumentShare>` to `ApplicationDbContext` — ContosoDashboard/Data/ApplicationDbContext.cs
+ - [x] T008 Create EF Core migration for document entities and apply to LocalDB — ContosoDashboard/Migrations/ (create via `dotnet ef migrations add AddDocuments` and `dotnet ef database update`)
+ - [x] T009 Add seed data for categories and sample documents (development only) — ContosoDashboard/Data/Seed/DocumentSeed.cs
+ - [x] T010 Add `IFileStorageService` interface — ContosoDashboard/Services/IFileStorageService.cs
+ - [x] T011 Implement `LocalFileStorageService` per storage pattern and config `BasePath` — ContosoDashboard/Services/LocalFileStorageService.cs
+ - [x] T012 Add `IVirusScanner` stub and `StubVirusScanner` implementation for training — ContosoDashboard/Services/Scanner/IVirusScanner.cs, ContosoDashboard/Services/Scanner/StubVirusScanner.cs
+ - [x] T013 Register services in DI container (`IFileStorageService`, `DocumentService`, `IVirusScanner`) — ContosoDashboard/Program.cs
+ - [x] T014 Add configuration model for file storage and bind in startup — ContosoDashboard/Configuration/FileStorageOptions.cs and ContosoDashboard/Program.cs
 
 ---
 
 **Phase 2 — Foundational (blocking prerequisites)**
-- [ ] T015 [P] Implement `DocumentService` to orchestrate upload/metadata/notifications — ContosoDashboard/Services/DocumentService.cs
-- [ ] T016 Implement storage path generator helper (GUID path pattern) — ContosoDashboard/Services/Helpers/FilePathGenerator.cs
-- [ ] T017 Implement upload validation helpers (extension whitelist, file size check) — ContosoDashboard/Services/Validation/FileValidation.cs
-- [ ] T018 Implement `FilesController` API endpoints per contract: upload, download, delete, get metadata, share — ContosoDashboard/Controllers/FilesController.cs
-- [ ] T019 Add authorization checks and policies used by `FilesController` (owner|project member|share|admin) — ContosoDashboard/Authorization/DocumentAuthorizationHandler.cs
-- [ ] T020 Create repository-level methods if needed (e.g., DocumentRepository) or use `ApplicationDbContext` directly for persistence — ContosoDashboard/Services/Repositories/DocumentRepository.cs
-- [ ] T021 Add logging and audit entries for upload/download/delete/share actions — ContosoDashboard/Services/Logging/DocumentAuditLogger.cs
+ - [x] T015 [P] Implement `DocumentService` to orchestrate upload/metadata/notifications — ContosoDashboard/Services/DocumentService.cs
+ - [x] T016 Implement storage path generator helper (GUID path pattern) — ContosoDashboard/Services/Helpers/FilePathGenerator.cs
+ - [x] T017 Implement upload validation helpers (extension whitelist, file size check) — ContosoDashboard/Services/Validation/FileValidation.cs
+ - [x] T018 Implement `FilesController` API endpoints per contract: upload, download, delete, get metadata, share — ContosoDashboard/Controllers/FilesController.cs
+ - [x] T019 Add authorization checks and policies used by `FilesController` (owner|project member|share|admin) — ContosoDashboard/Authorization/DocumentAuthorizationHandler.cs
+ - [x] T020 Create repository-level methods if needed (e.g., DocumentRepository) or use `ApplicationDbContext` directly for persistence — ContosoDashboard/Services/Repositories/DocumentRepository.cs
+ - [x] T021 Add logging and audit entries for upload/download/delete/share actions — ContosoDashboard/Services/Logging/DocumentAuditLogger.cs
 
 ---
 
 **Phase 2 — User Stories**
 
 **User Story 1 (US1) — Upload a Document (P1)**
-- [ ] T022 [US1] Implement upload UI component with multipart upload, metadata form, and progress indicator — ContosoDashboard/Pages/DocumentUpload.razor
-- [ ] T023 [US1] Implement server-side upload handler that: validates input, generates file path, saves file via `IFileStorageService`, creates DB record, and returns metadata including `scanStatus` — ContosoDashboard/Controllers/FilesController.cs
-- [ ] T024 [US1] Ensure upload flow follows sequence: generate path → save file → insert metadata (implement atomic rollback on disk failure) — ContosoDashboard/Services/DocumentService.cs
-- [ ] T025 [US1] Add unit tests for `DocumentService.UploadAsync` covering success, oversized file, unsupported type, disk error cleanup — ContosoDashboard.Tests/DocumentServiceTests.cs
-- [ ] T026 [US1] Add integration test for end-to-end upload → metadata verify → download → delete (use test DB and temp filesystem) — ContosoDashboard.IntegrationTests/UploadFlowTests.cs
+ - [x] T022 [US1] Implement upload UI component with multipart upload, metadata form, and progress indicator — ContosoDashboard/Pages/DocumentUpload.razor
+ - [x] T023 [US1] Implement server-side upload handler that: validates input, generates file path, saves file via `IFileStorageService`, creates DB record, and returns metadata including `scanStatus` — ContosoDashboard/Controllers/FilesController.cs
+ - [x] T024 [US1] Ensure upload flow follows sequence: generate path → save file → insert metadata (implement atomic rollback on disk failure) — ContosoDashboard/Services/DocumentService.cs
+ - [x] T025 [US1] Add unit tests for `DocumentService.UploadAsync` covering success, oversized file, unsupported type, disk error cleanup — ContosoDashboard.Tests/DocumentServiceTests.cs
+ - [x] T026 [US1] Add integration test for end-to-end upload → metadata verify → download → delete (use test DB and temp filesystem) — ContosoDashboard.IntegrationTests/UploadFlowTests.cs
 
 **User Story 2 (US2) — View & Search Documents (P1)**
-- [ ] T027 [US2] Implement `My Documents` and `Project Documents` Blazor pages with sorting and filtering UI — ContosoDashboard/Pages/Documents.razor, ContosoDashboard/Pages/ProjectDocuments.razor
-- [ ] T028 [US2] Implement server-side search API and pagination supporting title, description, tags, uploader, project — ContosoDashboard/Controllers/FilesController.cs (search endpoint)
-- [ ] T029 [US2] Add `Recent Documents` dashboard widget and wire to user's recent uploads — ContosoDashboard/Shared/Components/RecentDocuments.razor
-- [ ] T030 [US2] Add unit tests for search and listing APIs (filtering, authorization) — ContosoDashboard.Tests/FilesControllerSearchTests.cs
+ - [x] T027 [US2] Implement `My Documents` and `Project Documents` Blazor pages with sorting and filtering UI — ContosoDashboard/Pages/Documents.razor, ContosoDashboard/Pages/ProjectDocuments.razor
+ - [x] T028 [US2] Implement server-side search API and pagination supporting title, description, tags, uploader, project — ContosoDashboard/Controllers/FilesController.cs (search endpoint)
+ - [x] T029 [US2] Add `Recent Documents` dashboard widget and wire to user's recent uploads — ContosoDashboard/Shared/Components/RecentDocuments.razor
+ - [x] T030 [US2] Add unit tests for search and listing APIs (filtering, authorization) — ContosoDashboard.Tests/FilesControllerSearchTests.cs
 
 **User Story 3 (US3) — Share Document (P2)**
 - [ ] T031 [US3] Implement `DocumentShare` persistence, `Share` endpoint, and in-app notification side-effect — ContosoDashboard/Models/DocumentShare.cs, ContosoDashboard/Controllers/FilesController.cs (share action), ContosoDashboard/Services/DocumentService.cs

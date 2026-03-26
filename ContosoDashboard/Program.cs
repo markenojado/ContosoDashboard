@@ -68,6 +68,13 @@ builder.Services.AddScoped<ContosoDashboard.Services.Logging.IDocumentAuditLogge
 // Add HttpContextAccessor for accessing user claims
 builder.Services.AddHttpContextAccessor();
 
+// Register `HttpClient` for components that inject it (Blazor pages)
+builder.Services.AddScoped(sp => {
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseUrl = config["AppBaseUrl"] ?? "https://localhost:5000";
+    return new System.Net.Http.HttpClient { BaseAddress = new Uri(baseUrl) };
+});
+
 var app = builder.Build();
 
 // Initialize database
