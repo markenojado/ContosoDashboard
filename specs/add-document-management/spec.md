@@ -296,6 +296,7 @@ Document owner shares a file with a teammate.
 - **FR-005**: System MUST store files outside `wwwroot` on local filesystem for training (e.g., `AppData/uploads/{userId}/{projectId or 'personal'}/{guid}.{ext}`).
 - **FR-006**: System MUST generate and persist unique file paths before inserting database records and follow sequence: generate path → save file → insert metadata.
 - **FR-007**: System MUST scan uploaded files for viruses/malware before making them available for download.
+- **FR-007**: System MUST scan uploaded files for viruses/malware before making them available for download. **Training note:** use a stubbed/scoped scanner implementation in the local training build; production deployments MUST integrate a real virus/malware scanning service or engine.
 - **FR-008**: System MUST provide views: `My Documents`, `Project Documents`, `Shared with Me`, and a `Recent Documents` dashboard widget.
 - **FR-009**: System MUST provide search by title, description, tags, uploader name, and project, returning results within 2 seconds for expected dataset sizes.
 - **FR-010**: System MUST allow document owners and authorized roles to download and preview files in-browser for supported types.
@@ -370,5 +371,7 @@ Document owner shares a file with a teammate.
 - Q1: `FR-022` → A: Disallow uploads while offline — users shown clear message and must reconnect before uploading. Rationale: keeps training implementation simple, avoids sync/conflict complexity, and reduces test burden.
 
 - Q2: `FR-023` → A: Two-level sharing permissions (`view`, `edit`) — simple, common, and easy to teach/implement. Rationale: covers common collaboration needs without extra UI complexity.
+
+- Q3: `FR-007` → A: Use a stubbed scanner in training; integrate a real scanner in production. Rationale: reduces training/test friction while ensuring production security.
 
 

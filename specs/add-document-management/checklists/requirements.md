@@ -38,4 +38,5 @@
 
 - Offline upload behavior: uploads are disallowed while offline (training mode).
 - Sharing permissions: implemented as two levels: `view` and `edit`.
+ - Virus/malware scanning: training uses a stubbed scanner; production MUST integrate a real scanner/service.
 
