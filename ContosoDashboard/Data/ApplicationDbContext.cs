@@ -223,5 +223,37 @@ public class ApplicationDbContext : DbContext
                 IsActive = true
             }
         );
+
+        // Seed sample documents (development only)
+        modelBuilder.Entity<Document>().HasData(
+            new Document
+            {
+                DocumentId = 1,
+                Title = "Contoso Onboarding",
+                FileName = "onboarding.pdf",
+                FilePath = "seed/1/onboarding.pdf",
+                ContentType = "application/pdf",
+                Size = 0,
+                UploadedByUserId = 2,
+                ProjectId = 1,
+                CreatedDate = DateTime.UtcNow,
+                ScanStatus = Models.ScanStatus.Clean,
+                ScanReport = "Seeded: clean"
+            },
+            new Document
+            {
+                DocumentId = 2,
+                Title = "Project Plan",
+                FileName = "project-plan.docx",
+                FilePath = "seed/2/project-plan.docx",
+                ContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                Size = 0,
+                UploadedByUserId = 3,
+                ProjectId = 1,
+                CreatedDate = DateTime.UtcNow,
+                ScanStatus = Models.ScanStatus.Clean,
+                ScanReport = "Seeded: clean"
+            }
+        );
     }
 }

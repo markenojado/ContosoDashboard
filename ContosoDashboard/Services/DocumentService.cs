@@ -48,7 +48,24 @@ public class DocumentService
         };
 
         _db.Documents.Add(doc);
-        await _db.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception)
+        {
+            // Rollback: delete file from storage to avoid orphaned files when DB save fails
+            try
+            {
+                await _storage.DeleteFileAsync(relativePath, cancellationToken);
+            }
+            catch
+            {
+                // best-effort cleanup; swallow to not hide original exception
+            }
+
+            throw;
+        }
 
         // Perform scan (training stub will be fast)
         try
