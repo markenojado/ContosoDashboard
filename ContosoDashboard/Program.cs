@@ -12,7 +12,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor(options =>
+{
+    options.DetailedErrors = true; // enable detailed circuit errors in development
+});
 builder.Services.AddControllers();
 
 // Add authentication state provider for Blazor
@@ -71,7 +74,7 @@ builder.Services.AddHttpContextAccessor();
 // Register `HttpClient` for components that inject it (Blazor pages)
 builder.Services.AddScoped(sp => {
     var config = sp.GetRequiredService<IConfiguration>();
-    var baseUrl = config["AppBaseUrl"] ?? "https://localhost:5000";
+    var baseUrl = config["AppBaseUrl"] ?? "http://localhost:5000";
     return new System.Net.Http.HttpClient { BaseAddress = new Uri(baseUrl) };
 });
 

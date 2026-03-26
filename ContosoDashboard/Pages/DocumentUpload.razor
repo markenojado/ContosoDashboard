@@ -8,25 +8,60 @@
 <InputFile OnChange="OnFileSelected" />
 <button @onclick="UploadFile">Upload</button>
 
+<div class="mt-3">
+    @if (!string.IsNullOrEmpty(statusMessage))
+    {
+        <div class="alert @statusClass">@statusMessage</div>
+    }
+</div>
+
 @code {
     private IBrowserFile? _selected;
+    private string? statusMessage;
+    private string statusClass = "alert-info";
 
     private void OnFileSelected(InputFileChangeEventArgs e)
     {
         _selected = e.File;
+        statusMessage = null;
     }
 
     private async Task UploadFile()
     {
-        if (_selected == null) return;
-        var content = new MultipartFormDataContent();
-        var stream = _selected.OpenReadStream(50 * 1024 * 1024);
-        content.Add(new StreamContent(stream), "file", _selected.Name);
-        var res = await Http.PostAsync("api/files/upload", content);
-        if (res.IsSuccessStatusCode)
+        statusMessage = null;
+        if (_selected == null)
         {
-            // minimal success handling
-            var json = await res.Content.ReadAsStringAsync();
+            statusMessage = "No file selected.";
+            statusClass = "alert-warning";
+            return;
+        }
+
+        try
+        {
+            var content = new MultipartFormDataContent();
+            using var stream = _selected.OpenReadStream(50 * 1024 * 1024);
+            content.Add(new StreamContent(stream), "file", _selected.Name);
+
+            statusMessage = "Uploading...";
+            statusClass = "alert-info";
+
+            var res = await Http.PostAsync("/api/files/upload", content);
+            var body = await res.Content.ReadAsStringAsync();
+            if (res.IsSuccessStatusCode)
+            {
+                statusMessage = "Upload succeeded.";
+                statusClass = "alert-success";
+            }
+            else
+            {
+                statusMessage = $"Upload failed: {res.StatusCode} - {body}";
+                statusClass = "alert-danger";
+            }
+        }
+        catch (Exception ex)
+        {
+            statusMessage = $"Client error: {ex.GetType().Name}: {ex.Message}";
+            statusClass = "alert-danger";
         }
     }
 }

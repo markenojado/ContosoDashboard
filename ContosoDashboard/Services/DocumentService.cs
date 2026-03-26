@@ -37,7 +37,21 @@ public class DocumentService
         var relativePath = FilePathGenerator.Generate(uploadedByUserId, projectId, originalFileName);
 
         // Save stream to storage
-        await _storage.SaveFileAsync(relativePath, content, cancellationToken);
+        var savedPath = await _storage.SaveFileAsync(relativePath, content, cancellationToken);
+
+        long size = 0;
+        try
+        {
+            if (!string.IsNullOrEmpty(savedPath) && System.IO.File.Exists(savedPath))
+            {
+                var fi = new System.IO.FileInfo(savedPath);
+                size = fi.Length;
+            }
+        }
+        catch
+        {
+            // ignore size read errors
+        }
 
         var doc = new Document
         {
@@ -45,7 +59,7 @@ public class DocumentService
             FileName = originalFileName,
             FilePath = relativePath,
             ContentType = contentType,
-            Size = content.Length > 0 ? content.Length : 0,
+            Size = size,
             UploadedByUserId = uploadedByUserId,
             ProjectId = projectId,
             ScanStatus = ScanStatus.Pending,
